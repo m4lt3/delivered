@@ -1,0 +1,84 @@
+/**
+ * src/styles/settings.scss
+ *
+ * Configures SASS variables and Vuetify overwrites
+ */
+
+// https://next.vuetifyjs.com/features/sass-variables/`
+// @use 'vuetify' with (
+//   $color-pack: false
+// );
+
+@font-face {
+  font-family: 'Stilu';
+  font-display: swap;
+  src:
+    local("Stilu-Light"),
+    url('./Stilu-Light.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Stilu';
+  font-display: swap;
+  font-weight: bold;
+  src:
+    local("Stilu-SemiBold"),
+    url('./Stilu-SemiBold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Stilu';
+  font-display: swap;
+  font-style: italic;
+  src:
+    local("Stilu-LightOblique"),
+    url('./Stilu-LightOblique.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Stilu';
+  font-display: swap;
+  font-style: italic;
+  font-weight: bold;
+  src:
+    local("Stilu-SemiBoldOblique"),
+    url('./Stilu-SemiBoldOblique.otf') format('opentype');
+}
+
+*, html, body {
+  font-family: 'Stilu', sans-serif;
+}
+
+
+h1, h2 {
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+h1>div,h2>div {
+  display: inline-block;
+  padding: 0 .5rem;
+}
+
+h1>div {
+  background-color: #000;
+}
+
+h2>div {
+  background-color: #524e49;
+}
+
+// dark mode
+
+h1.dark>div,h2.dark>div {
+  background-color: white;
+}
+
+h1.dark {
+   color: #000;
+}
+
+h2.dark {
+  color: #524e49;
+}
