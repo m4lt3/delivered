@@ -12,7 +12,7 @@
   <v-app-bar flat>
     <v-app-bar-title>
       <img style="width: 15rem" src="./delivered_logo.png" alt="The Delivered-Logo" />
-      Digital Character Sheets
+      Digital Courier Journal
     </v-app-bar-title>
     <v-spacer></v-spacer>
     <v-icon

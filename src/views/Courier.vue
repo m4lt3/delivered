@@ -1,5 +1,5 @@
 <template>
-  <Heading h="1">Character</Heading>
+  <Heading h="1">Courier Journal</Heading>
 </template>
 
 <script setup>

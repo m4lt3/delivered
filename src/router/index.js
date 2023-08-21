@@ -12,9 +12,9 @@ const routes = [
         component: () => import('@/views/Home.vue'),
       },
       {
-        path: '/character/:id',
-        name: 'character',
-        component: () => import('@/views/Character.vue'),
+        path: '/courier/:id',
+        name: 'courier',
+        component: () => import('@/views/Courier.vue'),
       },
     ],
   },

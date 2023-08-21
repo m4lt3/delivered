@@ -1,5 +1,7 @@
 <template>
-  <Heading h="1">Home</Heading>
+  <v-container>
+    <Heading h="1">Select your Courier</Heading>
+  </v-container>
 </template>
 
 <script setup>
