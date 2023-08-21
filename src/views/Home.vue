@@ -7,6 +7,21 @@
   import Heading from '@/components/heading.vue';
   import DeleteModal from '@/components/deleteModal.vue';
 
+  const defaultCourier = {
+    courier: {
+      info: {},
+      stats: {
+        tier: 0,
+        body: 1,
+        wit: 1,
+        social: 1
+      },
+      flavour: {}
+    },
+    parcels: [],
+    journal: []
+  };
+
   const router = useRouter();
 
   const couriers = ref([]);
@@ -21,26 +36,30 @@
   }
 
   async function addCourier() {
-    let id = await db.couriers.add({ courier: { info: {}, stats: {} }, parcels: [], journal: [] });
+    let id = await db.couriers.add(defaultCourier);
     router.push('/courier/' + id);
   }
 
   onMounted(() => {
     loadCouriers();
   });
-
 </script>
 <template>
   <v-container>
     <Heading h="1">Select your Courier</Heading>
     <div id="CourierGrid">
-      <v-card v-for="courier in couriers"  @click.self="router.push('/courier/'+courier.id)" :key="courier.id">
-        <template #title>{{ courier.name }}</template>
+      <v-card v-for="courier in couriers"  @click="router.push('/courier/'+courier.id)" :key="courier.id">
+        <template #title>{{ courier.courier.info.name }}</template>
+        <template #subtitle>Tier {{ courier.courier.stats.tier }}</template>
         <template #append>
           <DeleteModal
             @delete="deleteCourier(courier.id)"
             variant="plain"
+            @click.stop
           ></DeleteModal>
+        </template>
+        <template #loader>
+          <v-progress-linear :model-value="courier.courier.stats.xp * 20" color="warning"></v-progress-linear>
         </template>
       </v-card>
       <v-card
