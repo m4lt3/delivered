@@ -16,7 +16,7 @@
   }
 
   async function deleteCourier(id) {
-    await db.couriers.where("id").equals(id).delete();
+    await db.couriers.delete(id);
     loadCouriers();
   }
 
