@@ -74,14 +74,14 @@ function addParcel(parcel) {
         </v-col>
       </v-row>
       <div class="d-flex flex-column mt-3">
-        <v-card v-for="parcel in filteredParcels" :key="'p-' + parcel.id">
+        <v-card variant="tonal" v-for="parcel in filteredParcels" :key="'p-' + parcel.id">
           <v-card-item>
             <v-card-title>{{ parcel.name }}</v-card-title>
             <v-card-subtitle>#{{parcel.id}}</v-card-subtitle>
             <template #append>
               <v-text-field
                 prepend-icon="mdi-clock-outline"
-                variant="solo"
+                variant="solo-filled"
                 type="number"
                 min="0"
                 v-model="parcel.daysLeft"
@@ -98,7 +98,7 @@ function addParcel(parcel) {
                 @change="courierStore.save()"
               ></v-checkbox>
             </div>
-            <v-textarea v-model="parcel.description" @change="courierStore.save()"></v-textarea>
+            <v-textarea variant="outlined" v-model="parcel.description" @change="courierStore.save()"></v-textarea>
           </v-card-text>
         </v-card>
       </div>
