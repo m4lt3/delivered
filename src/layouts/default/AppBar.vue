@@ -2,6 +2,8 @@
   import { useTheme } from 'vuetify';
   import { useRoute, useRouter } from 'vue-router';
 
+  import DotMenu from '@/components/dotMenu.vue';
+
   const router = useRouter();
   const route = useRoute();
 
@@ -23,5 +25,6 @@
       @click="toggleTheme"
       style="margin-right: 1rem;"
     ></v-icon>
+    <DotMenu v-if="route.name == 'courier'"></DotMenu>
   </v-app-bar>
 </template>
