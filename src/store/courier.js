@@ -23,5 +23,12 @@ export const useCourierStore = defineStore('courier', () => {
     await db.couriers.put(JSON.parse(JSON.stringify(courier.value)));
   }
 
-  return { courier, load, save };
+  async function remove() {
+    if (courier.value) {
+        await db.couriers.delete(courier.value.id);
+        courier.value = undefined;
+    }
+  }
+
+  return { courier, load, save, remove };
 });
