@@ -1,14 +1,47 @@
 <script setup>
   import { useRoute } from 'vue-router';
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
 
   import { db } from '@/utils/db.js';
 
   import Heading from '@/components/heading.vue';
+  import AddParcelModal from '@/components/addParcelModal.vue';
 
   const route = useRoute();
 
   const courier = ref(undefined);
+  const parcelFilter = ref('open');
+  const filteredParcels = computed(() => {
+    if (!courier.value.parcels) {
+      return [];
+    }
+
+    return courier.value.parcels.filter((elem) => {
+      switch (parcelFilter.value) {
+        case 'all':
+          return true;
+          break;
+        case 'open':
+          if (elem.daysLeft > 0 && elem.successes.some(sElem => sElem == 0)) {
+            return true;
+          }
+          return false;
+          break;
+        case 'delivered':
+          if (!elem.successes.some(sElem => sElem == 0)) {
+            return true;
+          }
+          return false;
+          break;
+        case 'failed':
+          if (elem.daysLeft <= 0 && elem.successes.some(sElem => sElem == 0)) {
+            return true;
+          }
+          return false;
+          break;
+      }
+    });
+  });
 
   onMounted(() => {
     loadCourier();
@@ -21,12 +54,24 @@
   async function saveChanges() {
     await db.couriers.put(JSON.parse(JSON.stringify(courier.value)), Number(route.params.id));
     loadCourier();
+    console.log("Changes saved");
+  }
+
+  function addParcel(parcel) {
+    let successes =  [];
+    for (let i = 0; i < parcel.successes; i++) {
+      successes.push(0);
+    }
+    parcel.successes = successes;
+    courier.value.parcels.push(parcel);
+    saveChanges()
   }
 </script>
 
 <template>
   <v-container>
     <Heading h="1">Courier Journal</Heading>
+    {{ courier }}
     <template v-if="courier == undefined">
       <Heading h="2" class="my-5">404 - Courier lost in Space</Heading>
     </template>
@@ -136,6 +181,56 @@
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
+      </v-card-text>
+      </v-card>
+      <v-card
+        prepend-icon="mdi-package"
+        title="Parcels"
+      >
+      <v-card-text>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-select
+              label="Filter Parcels"
+              v-model="parcelFilter"
+              :items="[ { title: 'Open', value: 'open' }, { title: 'Delivered!', value: 'delivered' }, { title: 'Failed', value: 'failed' }, { title: 'All', value: 'all' } ]"
+              density="compact"
+              hide-details
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="6">
+            <AddParcelModal @input="addParcel"></AddParcelModal>
+          </v-col>
+        </v-row>
+        <div class="d-flex flex-column mt-3">
+          <v-card v-for="(parcel, index) in filteredParcels" :key="'p-' + index">
+            <v-card-item>
+              <v-card-title>{{ parcel.name }}</v-card-title>
+              <v-card-subtitle>#{{index}}</v-card-subtitle>
+              <template #append>
+                <v-text-field
+                  prepend-icon="mdi-clock-outline"
+                  variant="solo"
+                  type="number"
+                  min="0"
+                  v-model="parcel.daysLeft"
+                  @change="saveChanges()"
+                ></v-text-field>
+              </template>
+            </v-card-item>
+            <v-card-text>
+              <div class="d-flex flex-wrap">
+                <v-checkbox
+                  v-for="(success, sIndex) in parcel.successes"
+                  :key="'p-' + index + '-s-' + sIndex"
+                  v-model="parcel.successes[sIndex]"
+                  @change="saveChanges()"
+                ></v-checkbox>
+              </div>
+              <v-textarea v-model="parcel.description" @change="saveChanges()"></v-textarea>
+            </v-card-text>
+          </v-card>
+        </div>
       </v-card-text>
       </v-card>
     </template>
