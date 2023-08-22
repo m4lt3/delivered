@@ -1,5 +1,9 @@
 <script setup>
   import { useTheme } from 'vuetify';
+  import { useRoute, useRouter } from 'vue-router';
+
+  const router = useRouter();
+  const route = useRoute();
 
   const theme = useTheme();
 
@@ -15,6 +19,7 @@
       Digital Courier Journal
     </v-app-bar-title>
     <v-spacer></v-spacer>
+      <v-icon v-if="route.name != 'Home'" icon="mdi-home-circle" style="margin-right: 1rem" @click="router.push({ name: 'Home' })"></v-icon>
     <v-icon
       :icon="theme.global.name.value == 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
       @click="toggleTheme"
