@@ -43,6 +43,8 @@
     });
   });
 
+  const newEntry = ref("");
+
   onMounted(() => {
     loadCourier();
   });
@@ -66,12 +68,17 @@
     courier.value.parcels.push(parcel);
     saveChanges()
   }
+
+  function addJournalEntry() {
+    courier.value.journal.push(newEntry.value.toString());
+    saveChanges();
+    newEntry.value = "";
+  }
 </script>
 
 <template>
   <v-container>
     <Heading h="1">Courier Journal</Heading>
-    {{ courier }}
     <template v-if="courier == undefined">
       <Heading h="2" class="my-5">404 - Courier lost in Space</Heading>
     </template>
@@ -186,51 +193,72 @@
       <v-card
         prepend-icon="mdi-package"
         title="Parcels"
+        class="my-5"
+      >
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" md="6">
+              <v-select
+                label="Filter Parcels"
+                variant="underlined"
+                v-model="parcelFilter"
+                :items="[ { title: 'Open', value: 'open' }, { title: 'Delivered!', value: 'delivered' }, { title: 'Failed', value: 'failed' }, { title: 'All', value: 'all' } ]"
+                density="compact"
+                hide-details
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="6">
+              <AddParcelModal @input="addParcel"></AddParcelModal>
+            </v-col>
+          </v-row>
+          <div class="d-flex flex-column mt-3">
+            <v-card v-for="(parcel, index) in filteredParcels" :key="'p-' + index">
+              <v-card-item>
+                <v-card-title>{{ parcel.name }}</v-card-title>
+                <v-card-subtitle>#{{index}}</v-card-subtitle>
+                <template #append>
+                  <v-text-field
+                    prepend-icon="mdi-clock-outline"
+                    variant="solo"
+                    type="number"
+                    min="0"
+                    v-model="parcel.daysLeft"
+                    @change="saveChanges()"
+                  ></v-text-field>
+                </template>
+              </v-card-item>
+              <v-card-text>
+                <div class="d-flex flex-wrap">
+                  <v-checkbox
+                    v-for="(success, sIndex) in parcel.successes"
+                    :key="'p-' + index + '-s-' + sIndex"
+                    v-model="parcel.successes[sIndex]"
+                    @change="saveChanges()"
+                  ></v-checkbox>
+                </div>
+                <v-textarea v-model="parcel.description" @change="saveChanges()"></v-textarea>
+              </v-card-text>
+            </v-card>
+          </div>
+        </v-card-text>
+      </v-card>
+      <v-card
+        prepend-icon="mdi-notebook"
+        title="Journal"
+        class="my-5"
       >
       <v-card-text>
-        <v-row>
-          <v-col cols="12" md="6">
-            <v-select
-              label="Filter Parcels"
-              v-model="parcelFilter"
-              :items="[ { title: 'Open', value: 'open' }, { title: 'Delivered!', value: 'delivered' }, { title: 'Failed', value: 'failed' }, { title: 'All', value: 'all' } ]"
-              density="compact"
-              hide-details
-            ></v-select>
-          </v-col>
-          <v-col cols="12" md="6">
-            <AddParcelModal @input="addParcel"></AddParcelModal>
-          </v-col>
-        </v-row>
-        <div class="d-flex flex-column mt-3">
-          <v-card v-for="(parcel, index) in filteredParcels" :key="'p-' + index">
-            <v-card-item>
-              <v-card-title>{{ parcel.name }}</v-card-title>
-              <v-card-subtitle>#{{index}}</v-card-subtitle>
-              <template #append>
-                <v-text-field
-                  prepend-icon="mdi-clock-outline"
-                  variant="solo"
-                  type="number"
-                  min="0"
-                  v-model="parcel.daysLeft"
-                  @change="saveChanges()"
-                ></v-text-field>
-              </template>
-            </v-card-item>
-            <v-card-text>
-              <div class="d-flex flex-wrap">
-                <v-checkbox
-                  v-for="(success, sIndex) in parcel.successes"
-                  :key="'p-' + index + '-s-' + sIndex"
-                  v-model="parcel.successes[sIndex]"
-                  @change="saveChanges()"
-                ></v-checkbox>
-              </div>
-              <v-textarea v-model="parcel.description" @change="saveChanges()"></v-textarea>
-            </v-card-text>
-          </v-card>
-        </div>
+        <v-textarea v-model="newEntry" label="New Journal Entry" variant="outlined"></v-textarea>
+        <v-btn color="success" @click="addJournalEntry" block><v-icon icon="mdi-plus"></v-icon></v-btn>
+        <v-divider class="my-5"></v-divider>
+        <v-textarea
+          v-for="day in courier.journal.length"
+          :key="'j-' + day"
+          v-model="courier.journal[courier.journal.length - day]"
+          variant="outlined"
+          :label="'Day ' + (courier.journal.length - day + 1)"
+          @change="saveChanges()"
+        ></v-textarea>
       </v-card-text>
       </v-card>
     </template>
