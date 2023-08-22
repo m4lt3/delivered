@@ -1,7 +1,8 @@
 <script setup>
-  import { db } from '@/utils/db.js';
   import { useRoute, useRouter } from 'vue-router';
   import { watch, ref, onMounted } from 'vue';
+
+  import { useCourierStore } from '@/store/courier';
 
   import Ajv from 'ajv';
 
@@ -78,35 +79,22 @@
   const route = useRoute();
   const router = useRouter();
 
-  const courier = ref(undefined);
+  const courierStore = useCourierStore();
+
   const showImport = ref(false);
   const uploadFile = ref([]);
   const allowImport = ref(false);
   const importError = ref(false);
 
-  watch(() => { return route.params.id }, (newVal, oldVal) => {
-    loadCourier();
-  });
-
-  onMounted(() => {
-    loadCourier();
-  });
-
-  async function loadCourier() {
-    courier.value = await db.couriers.get(Number(route.params.id));
-  }
-
   async function deleteCourier() {
-    await db.couriers.delete(Number(route.params.id));
+    await courierStore.remove();
     router.push({ name: 'Home' });
   }
 
   async function exportCourier() {
-    await loadCourier();
-
     let a = document.createElement('a');
-    a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(courier.value)));
-    a.setAttribute('download', `${route.params.id}_${courier.value.courier.info.name.replaceAll(' ', '-')}.json`);
+    a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(courierStore.courier)));
+    a.setAttribute('download', `${route.params.id}_${courierStore.courier.courier.info.name.replaceAll(' ', '-')}.json`);
 
     document.body.appendChild(a);
     a.click();
@@ -116,12 +104,12 @@
   async function importCourier() {
     let toImport = JSON.parse(await uploadFile.value[0].text());
     toImport.id = Number(route.params.id);
-    await db.couriers.put(toImport, Number(route.params.id));
+    courierStore.courier = toImport;
+    await courierStore.save();
     uploadFile.value = [];
     allowImport.value = false;
     importError.value = false;
     showImport.value = false;
-    router.push({ name: 'Home' });
   }
 
   async function checkImportFile() {
@@ -154,13 +142,13 @@
   }
 </script>
 <template>
-  <v-menu v-if="courier">
+  <v-menu v-if="courierStore.courier">
     <template #activator="{ props }">
       <v-icon icon="mdi-dots-vertical" style="margin-right: 1rem" v-bind="props"></v-icon>
     </template>
     <v-list>
       <v-list-item>
-        <DeleteModal @delete="deleteCourier" variant="playin"><v-icon icon="mdi-delete-outline"></v-icon>Delete Courier</DeleteModal>
+        <DeleteModal @delete="deleteCourier" variant="plain"><v-icon icon="mdi-delete-outline"></v-icon>Delete Courier</DeleteModal>
       </v-list-item>
       <v-list-item
         prepend-icon="mdi-application-export"
