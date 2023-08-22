@@ -56,7 +56,6 @@
   async function saveChanges() {
     await db.couriers.put(JSON.parse(JSON.stringify(courier.value)), Number(route.params.id));
     loadCourier();
-    console.log("Changes saved");
   }
 
   function addParcel(parcel) {
