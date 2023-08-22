@@ -2,6 +2,8 @@
   import { useRoute } from 'vue-router';
   import { ref, onMounted, computed, watch } from 'vue';
 
+  import { useCourierStore } from '@/store/courier';
+
   import { db } from '@/utils/db.js';
 
   import Heading from '@/components/heading.vue';
@@ -9,14 +11,14 @@
 
   const route = useRoute();
 
-  const courier = ref(undefined);
+  const courierStore = useCourierStore();
   const parcelFilter = ref('open');
   const filteredParcels = computed(() => {
-    if (!courier.value.parcels) {
+    if (!courierStore.courier.parcels) {
       return [];
     }
 
-    return courier.value.parcels.filter((elem) => {
+    return courierStore.courier.parcels.filter((elem) => {
       switch (parcelFilter.value) {
         case 'all':
           return true;
@@ -57,22 +59,8 @@
 
   async function loadCourier() {
     loading.value = true;
-    courier.value = await db.couriers.get(Number(route.params.id));
+    courierStore.load(Number(route.params.id));
     loading.value = false;
-  }
-
-  async function saveChanges() {
-
-    for (let prop of ["wit", "body", "social", "tier", "xp"]) {
-      courier.value.courier.stats[prop] = Number(courier.value.courier.stats[prop]);
-    }
-
-    for (let i = 0; i < courier.value.parcels.length; i++) {
-      courier.value.parcels[i].daysLeft = Number(courier.value.parcels[i].daysLeft);
-    }
-
-    await db.couriers.put(JSON.parse(JSON.stringify(courier.value)), Number(route.params.id));
-    loadCourier();
   }
 
   function addParcel(parcel) {
@@ -81,14 +69,14 @@
       successes.push(false);
     }
     parcel.successes = successes;
-    parcel.id = courier.value.parcels.length + 1;
-    courier.value.parcels.push(parcel);
-    saveChanges()
+    parcel.id = courierStore.courier.parcels.length + 1;
+    courierStore.courier.parcels.push(parcel);
+    courierStore.save()
   }
 
   function addJournalEntry() {
-    courier.value.journal.push(newEntry.value.toString());
-    saveChanges();
+    courierStore.courier.journal.push(newEntry.value.toString());
+    courierStore.save();
     newEntry.value = "";
   }
 </script>
@@ -102,7 +90,7 @@
       </div>
     </template>
     <template v-else>
-      <template v-if="courier == undefined">
+      <template v-if="courierStore.courier == undefined">
         <Heading h="2" class="my-5">404 - Courier lost in Space</Heading>
       </template>
       <template v-else>
@@ -111,107 +99,107 @@
           title="Courier Info"
           prepend-icon="mdi-account-circle"
         >
-        <v-card-text>
-          <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field label="Name" variant="underlined" v-model="courier.courier.info.name" @change="saveChanges"></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field label="Pronouns" variant="underlined" v-model="courier.courier.info.pronouns" @change="saveChanges"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-divider></v-divider>
-          <v-row class="mt-2">
-            <v-col cols="2">
-              <v-text-field
-                type="number"
-                min="0"
-                label="Tier"
-                variant="underlined"
-                v-model="courier.courier.stats.tier"
-                @change="saveChanges"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="10" class="d-flex align-center">
-              <v-slider
-                v-model="courier.courier.stats.xp"
-                label="XP"
-                :min="0"
-                :max="5"
-                :step="1"
-                thumb-label
-                thumb-color="warning"
-                track-fill-color="warning"
-                @update:modelValue="saveChanges"
-              ></v-slider>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" md="4">
-              <v-text-field
-                variant="solo-filled"
-                v-model="courier.courier.stats.body"
-                label="Body"
-                type="number"
-                min="1"
-                @change="saveChanges"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12" md="4">
-              <v-text-field
-                variant="solo-filled"
-                v-model="courier.courier.stats.wit"
-                label="Wit"
-                type="number"
-                min="1"
-                @change="saveChanges"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12" md="4">
-              <v-text-field
-                variant="solo-filled"
-                v-model="courier.courier.stats.social"
-                label="Social"
-                type="number"
-                min="1"
-                @change="saveChanges"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-divider></v-divider>
-          <v-expansion-panels class="mt-2">
-            <v-expansion-panel title="How long have you been a courier?">
-              <v-expansion-panel-text>
-                <v-textarea v-model="courier.courier.flavour.experience" variant="outlined" @change="saveChanges">
-                </v-textarea>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-            <v-expansion-panel title="Who is your employer or what kind of parcels do you deliver?">
-              <v-expansion-panel-text>
-                <v-textarea v-model="courier.courier.flavour.employer" variant="outlined" @change="saveChanges">
-                </v-textarea>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-            <v-expansion-panel title="What does your vessel look like?">
-              <v-expansion-panel-text>
-                <v-textarea v-model="courier.courier.flavour.vessel" variant="outlined" @change="saveChanges">
-                </v-textarea>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-            <v-expansion-panel title="How prepared do you feel to take this voyage?">
-              <v-expansion-panel-text>
-                <v-textarea v-model="courier.courier.flavour.prepared" variant="outlined" @change="saveChanges">
-                </v-textarea>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-            <v-expansion-panel title="What are you running toward or away from?">
-              <v-expansion-panel-text>
-                <v-textarea v-model="courier.courier.flavour.running" variant="outlined" @change="saveChanges">
-                </v-textarea>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-card-text>
+          <v-card-text>
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-text-field label="Name" variant="underlined" v-model="courierStore.courier.courier.info.name" @change="courierStore.save"></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field label="Pronouns" variant="underlined" v-model="courierStore.courier.courier.info.pronouns" @change="courierStore.save"></v-text-field>
+              </v-col>
+            </v-row>
+            <v-divider></v-divider>
+            <v-row class="mt-2">
+              <v-col cols="2">
+                <v-text-field
+                  type="number"
+                  min="0"
+                  label="Tier"
+                  variant="underlined"
+                  v-model="courierStore.courier.courier.stats.tier"
+                  @change="courierStore.save"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="10" class="d-flex align-center">
+                <v-slider
+                  v-model="courierStore.courier.courier.stats.xp"
+                  label="XP"
+                  :min="0"
+                  :max="5"
+                  :step="1"
+                  thumb-label
+                  thumb-color="warning"
+                  track-fill-color="warning"
+                  @update:modelValue="courierStore.save"
+                ></v-slider>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" md="4">
+                <v-text-field
+                  variant="solo-filled"
+                  v-model="courierStore.courier.courier.stats.body"
+                  label="Body"
+                  type="number"
+                  min="1"
+                  @change="courierStore.save"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="4">
+                <v-text-field
+                  variant="solo-filled"
+                  v-model="courierStore.courier.courier.stats.wit"
+                  label="Wit"
+                  type="number"
+                  min="1"
+                  @change="courierStore.save"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" md="4">
+                <v-text-field
+                  variant="solo-filled"
+                  v-model="courierStore.courier.courier.stats.social"
+                  label="Social"
+                  type="number"
+                  min="1"
+                  @change="courierStore.save"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-divider></v-divider>
+            <v-expansion-panels class="mt-2">
+              <v-expansion-panel title="How long have you been a courier?">
+                <v-expansion-panel-text>
+                  <v-textarea v-model="courierStore.courier.courier.flavour.experience" variant="outlined" @change="courierStore.save">
+                  </v-textarea>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+              <v-expansion-panel title="Who is your employer or what kind of parcels do you deliver?">
+                <v-expansion-panel-text>
+                  <v-textarea v-model="courierStore.courier.courier.flavour.employer" variant="outlined" @change="courierStore.save">
+                  </v-textarea>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+              <v-expansion-panel title="What does your vessel look like?">
+                <v-expansion-panel-text>
+                  <v-textarea v-model="courierStore.courier.courier.flavour.vessel" variant="outlined" @change="courierStore.save">
+                  </v-textarea>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+              <v-expansion-panel title="How prepared do you feel to take this voyage?">
+                <v-expansion-panel-text>
+                  <v-textarea v-model="courierStore.courier.courier.flavour.prepared" variant="outlined" @change="courierStore.save">
+                  </v-textarea>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+              <v-expansion-panel title="What are you running toward or away from?">
+                <v-expansion-panel-text>
+                  <v-textarea v-model="courierStore.courier.courier.flavour.running" variant="outlined" @change="courierStore.save">
+                  </v-textarea>
+                </v-expansion-panel-text>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-card-text>
         </v-card>
         <v-card
           prepend-icon="mdi-package"
@@ -246,7 +234,7 @@
                       type="number"
                       min="0"
                       v-model="parcel.daysLeft"
-                      @change="saveChanges()"
+                      @change="courierStore.save()"
                     ></v-text-field>
                   </template>
                 </v-card-item>
@@ -256,10 +244,10 @@
                       v-for="(success, sIndex) in parcel.successes"
                       :key="'p-' + parcel.id + '-s-' + sIndex"
                       v-model="parcel.successes[sIndex]"
-                      @change="saveChanges()"
+                      @change="courierStore.save()"
                     ></v-checkbox>
                   </div>
-                  <v-textarea v-model="parcel.description" @change="saveChanges()"></v-textarea>
+                  <v-textarea v-model="parcel.description" @change="courierStore.save()"></v-textarea>
                 </v-card-text>
               </v-card>
             </div>
@@ -275,12 +263,12 @@
           <v-btn color="success" @click="addJournalEntry" block><v-icon icon="mdi-plus"></v-icon></v-btn>
           <v-divider class="my-5"></v-divider>
           <v-textarea
-            v-for="day in courier.journal.length"
+            v-for="day in courierStore.courier.journal.length"
             :key="'j-' + day"
-            v-model="courier.journal[courier.journal.length - day]"
+            v-model="courierStore.courier.journal[courierStore.courier.journal.length - day]"
             variant="outlined"
-            :label="'Day ' + (courier.journal.length - day + 1)"
-            @change="saveChanges()"
+            :label="'Day ' + (courierStore.courier.journal.length - day + 1)"
+            @change="courierStore.save()"
           ></v-textarea>
         </v-card-text>
         </v-card>
