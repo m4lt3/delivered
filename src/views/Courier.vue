@@ -58,6 +58,9 @@
   });
 
   async function loadCourier() {
+    if (!route.params.id || isNaN(route.params.id)) {
+      return;
+    }
     loading.value = true;
     courierStore.load(Number(route.params.id));
     loading.value = false;
