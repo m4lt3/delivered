@@ -1,6 +1,6 @@
 <script setup>
   import { useRoute } from 'vue-router';
-  import { ref, onMounted, computed } from 'vue';
+  import { ref, onMounted, computed, watch } from 'vue';
 
   import { db } from '@/utils/db.js';
 
@@ -46,6 +46,10 @@
   const newEntry = ref("");
 
   onMounted(() => {
+    loadCourier();
+  });
+
+  watch(()  => route.params.id, (newVal, oldVal) => {
     loadCourier();
   });
 
