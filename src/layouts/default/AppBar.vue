@@ -14,10 +14,8 @@
 
 <template>
   <v-app-bar flat>
-    <v-app-bar-title>
-      <img style="width: 15rem" src="./delivered_logo.png" alt="The Delivered-Logo" />
-      Digital Courier Journal
-    </v-app-bar-title>
+      <img style="width: 20vw; max-height: 100%; align-self: center; max-width: 214px" src="@/assets/delivered_logo.png" alt="The Delivered-Logo" />
+      <b style="align-self: center">Digital Courier Journal</b>
     <v-spacer></v-spacer>
       <v-icon v-if="route.name != 'Home'" icon="mdi-home-circle" style="margin-right: 1rem" @click="router.push({ name: 'Home' })"></v-icon>
     <v-icon
