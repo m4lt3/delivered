@@ -3,6 +3,7 @@
   import { useRoute, useRouter } from 'vue-router';
 
   import DotMenu from '@/components/appBar/dotMenu.vue';
+  import InfoBox from '@/components/appBar/infoBox.vue';
 
   const router = useRouter();
   const route = useRoute();
@@ -19,12 +20,17 @@
       <img style="width: 20vw; max-height: 100%; align-self: center; max-width: 214px" src="@/assets/delivered_logo.png" alt="The Delivered-Logo" />
       <b style="align-self: center">Digital Courier Journal</b>
     <v-spacer></v-spacer>
-      <v-icon v-if="route.name != 'Home'" icon="mdi-home-circle" style="margin-right: 1rem" @click="router.push({ name: 'Home' })"></v-icon>
+
     <v-icon
       :icon="theme.global.name.value == 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
       @click="toggleTheme"
       style="margin-right: 1rem;"
     ></v-icon>
-    <DotMenu v-if="route.name == 'courier'"></DotMenu>
+    <template v-if="route.name == 'courier'">
+      <v-icon icon="mdi-home-circle" style="margin-right: 1rem" @click="router.push({ name: 'Home' })"></v-icon>
+      <InfoBox></InfoBox>
+      <DotMenu ></DotMenu>
+    </template>
+
   </v-app-bar>
 </template>
