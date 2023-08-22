@@ -54,6 +54,15 @@
   }
 
   async function saveChanges() {
+
+    for (let prop of ["wit", "body", "social", "tier", "xp"]) {
+      courier.value.courier.stats[prop] = Number(courier.value.courier.stats[prop]);
+    }
+
+    for (let i = 0; i < courier.value.parcels.length; i++) {
+      courier.value.parcels[i].daysLeft = Number(courier.value.parcels[i].daysLeft);
+    }
+
     await db.couriers.put(JSON.parse(JSON.stringify(courier.value)), Number(route.params.id));
     loadCourier();
   }
