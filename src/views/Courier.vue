@@ -61,7 +61,7 @@
   function addParcel(parcel) {
     let successes =  [];
     for (let i = 0; i < parcel.successes; i++) {
-      successes.push(0);
+      successes.push(false);
     }
     parcel.successes = successes;
     parcel.id = courier.value.parcels.length + 1;
