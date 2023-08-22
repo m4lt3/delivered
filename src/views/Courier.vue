@@ -64,6 +64,7 @@
       successes.push(0);
     }
     parcel.successes = successes;
+    parcel.id = courier.value.parcels.length + 1;
     courier.value.parcels.push(parcel);
     saveChanges()
   }
@@ -211,10 +212,10 @@
             </v-col>
           </v-row>
           <div class="d-flex flex-column mt-3">
-            <v-card v-for="(parcel, index) in filteredParcels" :key="'p-' + index">
+            <v-card v-for="parcel in filteredParcels" :key="'p-' + parcel.id">
               <v-card-item>
                 <v-card-title>{{ parcel.name }}</v-card-title>
-                <v-card-subtitle>#{{index}}</v-card-subtitle>
+                <v-card-subtitle>#{{parcel.id}}</v-card-subtitle>
                 <template #append>
                   <v-text-field
                     prepend-icon="mdi-clock-outline"
@@ -230,7 +231,7 @@
                 <div class="d-flex flex-wrap">
                   <v-checkbox
                     v-for="(success, sIndex) in parcel.successes"
-                    :key="'p-' + index + '-s-' + sIndex"
+                    :key="'p-' + parcel.id + '-s-' + sIndex"
                     v-model="parcel.successes[sIndex]"
                     @change="saveChanges()"
                   ></v-checkbox>
