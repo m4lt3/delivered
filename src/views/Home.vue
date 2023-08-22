@@ -12,6 +12,7 @@
       info: {},
       stats: {
         tier: 0,
+        xp: 0,
         body: 1,
         wit: 1,
         social: 1
