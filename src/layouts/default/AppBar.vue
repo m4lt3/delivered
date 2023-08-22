@@ -2,7 +2,7 @@
   import { useTheme } from 'vuetify';
   import { useRoute, useRouter } from 'vue-router';
 
-  import DotMenu from '@/components/dotMenu.vue';
+  import DotMenu from '@/components/appBar/dotMenu.vue';
 
   const router = useRouter();
   const route = useRoute();
