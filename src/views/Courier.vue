@@ -7,7 +7,7 @@
   import { db } from '@/utils/db.js';
 
   import Heading from '@/components/heading.vue';
-  import AddParcelModal from '@/components/addParcelModal.vue';
+  import AddParcelModal from '@/components/courier/addParcelModal.vue';
 
   const route = useRoute();
 
