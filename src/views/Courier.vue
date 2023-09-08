@@ -28,7 +28,7 @@
       return;
     }
     loading.value = true;
-    courierStore.load(Number(route.params.id));
+    await courierStore.load(Number(route.params.id));
     loading.value = false;
   }
 </script>
