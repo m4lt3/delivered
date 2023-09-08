@@ -74,7 +74,7 @@ function addParcel(parcel) {
         </v-col>
       </v-row>
       <div class="d-flex flex-column mt-3">
-        <v-card variant="tonal" v-for="parcel in filteredParcels" :key="'p-' + parcel.id">
+        <v-card variant="tonal" class="my-2" v-for="parcel in filteredParcels" :key="'p-' + parcel.id">
           <v-card-item>
             <v-card-title>{{ parcel.name }}</v-card-title>
             <v-card-subtitle>#{{parcel.id}}</v-card-subtitle>
