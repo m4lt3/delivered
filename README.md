@@ -1,57 +1,31 @@
-# base
+# Delivered! - Digital Courier Sheets
 
-## Project setup
+## What is "Delivered!"?
 
-```
-# yarn
-yarn
+Delivered is a solo journaling RPG developed by [Kari Jo "Kage" Freudigmann](https://www.ragekagegames.com/)
 
-# npm
-npm install
+## What is this project?
 
-# pnpm
-pnpm install
-```
+As the name states, this project offers the option to digitally store the courier sheets of the game.
 
-### Compiles and hot-reloads for development
+This Project is **not** a digital implementation of "Delivered" and it doesn't aim to be! A lot of work went into the creating of this RPG and fully implementing this and making it available for free online would be piracy.
 
-```
-# yarn
-yarn dev
+## Contribution
 
-# npm
-npm run dev
+Feel free to submit issues, or pull requests!
 
-# pnpm
-pnpm dev
-```
+## Legal
 
-### Compiles and minifies for production
+### Rights of "Delivered"
 
-```
-# yarn
-yarn build
+Delivered is a solo journaling RPG developed by [Kari Jo "Kage" Freudigmann](https://www.ragekagegames.com/) and all right remain with the original author!
 
-# npm
-npm run build
+### License of this Digital Courier Sheet
 
-# pnpm
-pnpm build
-```
+Delivered! - Digital Courier Sheets (c) 2023 by m4lt3
 
-### Lints and fixes files
+Delivered! - Digital Courier Sheets is licensed under a
+Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 
-```
-# yarn
-yarn lint
-
-# npm
-npm run lint
-
-# pnpm
-pnpm lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://vitejs.dev/config/).
+You should have received a copy of the license along with this
+work.  If not, see <http://creativecommons.org/licenses/by-nc-sa/3.0/>.
