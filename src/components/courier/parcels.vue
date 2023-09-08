@@ -79,14 +79,16 @@ function addParcel(parcel) {
             <v-card-title>{{ parcel.name }}</v-card-title>
             <v-card-subtitle>#{{parcel.id}}</v-card-subtitle>
             <template #append>
-              <v-text-field
-                prepend-icon="mdi-clock-outline"
-                variant="solo-filled"
-                type="number"
-                min="0"
-                v-model="parcel.daysLeft"
-                @change="courierStore.save()"
-              ></v-text-field>
+              <div style="min-width: 110px">
+                <v-text-field
+                  prepend-icon="mdi-clock-outline"
+                  variant="solo-filled"
+                  type="number"
+                  min="0"
+                  v-model="parcel.daysLeft"
+                  @change="courierStore.save()"
+                ></v-text-field>
+              </div>
             </template>
           </v-card-item>
           <v-card-text>
