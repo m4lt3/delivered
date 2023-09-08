@@ -43,8 +43,7 @@
       <v-btn color="success" size="large" block v-bind="props"><v-icon icon="mdi-plus"></v-icon></v-btn>
     </template>
     <v-card
-      width="500px"
-      max-width="100vw"
+     style="min-width: 200px; width: 50vw; max-width: 100vw"
     >
       <template #title>
         Add new Parcel
