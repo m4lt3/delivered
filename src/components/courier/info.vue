@@ -45,7 +45,7 @@ const courierStore = useCourierStore();
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" md="4">
+        <v-col cols="12" sm="4">
           <v-text-field
             variant="solo-filled"
             v-model="courierStore.courier.courier.stats.body"
@@ -55,7 +55,7 @@ const courierStore = useCourierStore();
             @change="courierStore.save"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" sm="4">
           <v-text-field
             variant="solo-filled"
             v-model="courierStore.courier.courier.stats.wit"
@@ -65,7 +65,7 @@ const courierStore = useCourierStore();
             @change="courierStore.save"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" sm="4">
           <v-text-field
             variant="solo-filled"
             v-model="courierStore.courier.courier.stats.social"
