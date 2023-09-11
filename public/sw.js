@@ -1,14 +1,14 @@
 // mostly copied from https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
 
-const currentCacheVersion = "v1.0.2";
+const currentCacheName = "delivered-v1.0.3";
 
 const addResourcesToCache = async (resources) => {
-  const cache = await caches.open(currentCacheVersion);
+  const cache = await caches.open(currentCacheName);
   await cache.addAll(resources);
 };
 
 const putInCache = async (request, response) => {
-  const cache = await caches.open(currentCacheVersion);
+  const cache = await caches.open(currentCacheName);
   await cache.put(request, response);
 };
 
@@ -27,9 +27,9 @@ const deleteCache = async (key) => {
 };
 
 const deleteOldCaches = async () => {
-  const cacheKeepList = [currentCacheVersion];
+  const cacheKeepList = [currentCacheName];
   const keyList = await caches.keys();
-  const cachesToDelete = keyList.filter((key) => !cacheKeepList.includes(key));
+  const cachesToDelete = keyList.filter((key) => ( key.match(/^delivered-v.*/) && !cacheKeepList.includes(key)) );
   await Promise.all(cachesToDelete.map(deleteCache));
 };
 
